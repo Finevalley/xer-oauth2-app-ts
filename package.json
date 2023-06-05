@@ -2,7 +2,7 @@
 	"name": "xero-oauth2-app-ts",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/src/functions/*.js",
+	"main": "dist/functions/*.js",
 	"scripts": {
 		"build": "tsc",
 		"watch": "tsc -w",

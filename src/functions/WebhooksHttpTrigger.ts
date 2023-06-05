@@ -3,8 +3,6 @@ import {
 	HttpRequest,
 	HttpResponseInit,
 	InvocationContext,
-	output,
-	trigger,
 } from "@azure/functions";
 
 export async function WebhooksHttpTrigger(
@@ -18,15 +16,9 @@ export async function WebhooksHttpTrigger(
 	return { body: `Hello, ${name}!` };
 }
 
-app.generic("WebhooksHttpTrigger", {
-	trigger: trigger.generic({
-		type: "httpTrigger",
-		methods: ["GET", "POST"],
-		route: "webhooks",
-		authLevel: "function",
-	}),
-	return: output.generic({
-		type: "http",
-	}),
+app.http("WebhooksHttpTrigger", {
+	methods: ["POST"],
+	route: "webhooks",
+	authLevel: "function",
 	handler: WebhooksHttpTrigger,
 });
