@@ -28,7 +28,7 @@ async function verifyWebhookEventSignature(
 	request: HttpRequest,
 	context: InvocationContext
 ) {
-	const WEBHOOK_KEY = process.env.WEBHOOK_KEY;
+	const XERO_WEBHOOK_KEY = process.env.XERO_WEBHOOK_KEY;
 
 	const rawBody = await request.text();
 
@@ -40,13 +40,13 @@ async function verifyWebhookEventSignature(
 		return false;
 	}
 
-	if (!WEBHOOK_KEY) {
-		context.log("Signature failed. No WEBHOOK_KEY was provided...");
+	if (!XERO_WEBHOOK_KEY) {
+		context.log("Signature failed. No XERO_WEBHOOK_KEY was provided...");
 		return false;
 	}
 
 	let computedSignature = crypto
-		.createHmac("sha256", WEBHOOK_KEY)
+		.createHmac("sha256", XERO_WEBHOOK_KEY)
 		.update(rawBody.toString())
 		.digest("base64");
 	let xeroSignature = request.headers.get("x-xero-signature");
