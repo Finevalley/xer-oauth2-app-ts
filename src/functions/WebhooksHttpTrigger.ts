@@ -29,7 +29,8 @@ async function verifyWebhookEventSignature(
 	context: InvocationContext
 ) {
 	const WEBHOOK_KEY = process.env.WEBHOOK_KEY;
-	const rawBody = await request.text;
+
+	const rawBody = await request.text();
 
 	context.log(request.headers);
 	context.log(rawBody);
