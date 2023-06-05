@@ -11,10 +11,10 @@ export async function WebhooksHttpTrigger(
 	context: InvocationContext
 ): Promise<HttpResponseInit> {
 	context.log(`Webhook event recieved at "${request.url}"!`);
-	context.log(request.headers);
-	context.log(request.json);
 
-	return { status: verifyWebhookEventSignature(request, context) ? 200 : 401 };
+	return {
+		status: (await verifyWebhookEventSignature(request, context)) ? 200 : 401,
+	};
 }
 
 app.http("WebhooksHttpTrigger", {
@@ -24,13 +24,17 @@ app.http("WebhooksHttpTrigger", {
 	handler: WebhooksHttpTrigger,
 });
 
-function verifyWebhookEventSignature(
+async function verifyWebhookEventSignature(
 	request: HttpRequest,
 	context: InvocationContext
 ) {
 	const WEBHOOK_KEY = process.env.WEBHOOK_KEY;
+	const rawBody = await request.text;
 
-	if (!request.body) {
+	context.log(request.headers);
+	context.log(rawBody);
+
+	if (!request.text) {
 		context.log("Signature failed. No request body was provided...");
 		return false;
 	}
@@ -42,7 +46,7 @@ function verifyWebhookEventSignature(
 
 	let computedSignature = crypto
 		.createHmac("sha256", WEBHOOK_KEY)
-		.update(request.body.toString())
+		.update(rawBody.toString())
 		.digest("base64");
 	let xeroSignature = request.headers.get("x-xero-signature");
 
