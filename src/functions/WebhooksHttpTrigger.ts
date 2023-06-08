@@ -6,6 +6,25 @@ import {
 	InvocationContext,
 } from "@azure/functions";
 
+app.http("LoginHttpTrigger", {
+	methods: ["GET"],
+	route: "login",
+	authLevel: "function",
+	handler: async (
+		request: HttpRequest,
+		context: InvocationContext
+	): Promise<HttpResponseInit> => {
+		context.log(`Webhook event received at "${request.url}"!`);
+
+		const XeroButton = "<a href='/api/connect'>Connect to Xero</a>";
+
+		return {
+			body: `<!DOCTYPE html><html><head><title>Page Title</title></head><body>${XeroButton}</body></html>`,
+			headers: { "content-type": "text/html" },
+		};
+	},
+});
+
 app.http("WebhooksHttpTrigger", {
 	methods: ["POST"],
 	route: "webhooks",
