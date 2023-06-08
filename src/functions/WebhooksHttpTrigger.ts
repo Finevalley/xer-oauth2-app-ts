@@ -6,22 +6,20 @@ import {
 	InvocationContext,
 } from "@azure/functions";
 
-export async function WebhooksHttpTrigger(
-	request: HttpRequest,
-	context: InvocationContext
-): Promise<HttpResponseInit> {
-	context.log(`Webhook event recieved at "${request.url}"!`);
-
-	return {
-		status: (await verifyWebhookEventSignature(request, context)) ? 200 : 401,
-	};
-}
-
 app.http("WebhooksHttpTrigger", {
 	methods: ["POST"],
 	route: "webhooks",
 	authLevel: "function",
-	handler: WebhooksHttpTrigger,
+	handler: async (
+		request: HttpRequest,
+		context: InvocationContext
+	): Promise<HttpResponseInit> => {
+		context.log(`Webhook event received at "${request.url}"!`);
+
+		return {
+			status: (await verifyWebhookEventSignature(request, context)) ? 200 : 401,
+		};
+	},
 });
 
 async function verifyWebhookEventSignature(
@@ -45,11 +43,11 @@ async function verifyWebhookEventSignature(
 		return false;
 	}
 
-	let computedSignature = crypto
+	const computedSignature = crypto
 		.createHmac("sha256", XERO_WEBHOOK_KEY)
 		.update(rawBody.toString())
 		.digest("base64");
-	let xeroSignature = request.headers.get("x-xero-signature");
+	const xeroSignature = request.headers.get("x-xero-signature");
 
 	if (xeroSignature === computedSignature) {
 		context.log("Signature passed! This is from Xero!");
