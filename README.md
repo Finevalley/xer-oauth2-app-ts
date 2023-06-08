@@ -2,7 +2,7 @@
 
 ## Overview
 
-This was created to faciliate recieving Xero [webhooks](https://developer.xero.com/documentation/guides/webhooks/overview).
+This was created to facilitate receiving Xero [webhooks](https://developer.xero.com/documentation/guides/webhooks/overview).
 
 ## Todo
 
@@ -11,7 +11,7 @@ This was created to faciliate recieving Xero [webhooks](https://developer.xero.c
 
 ## Thought process
 
-Events from Xero are forwared into Power Automate to be processed in Flow.
+Events from Xero are forwarded into Power Automate to be processed in Flow.
 
 The choice was made to do it this way to ensure that changes could be made using low-code / no-code methods.
 
@@ -19,7 +19,7 @@ The choice was made to do it this way to ensure that changes could be made using
 
 More information about how this works can be found [here](https://developer.xero.com/documentation/guides/webhooks/configuring-your-server); video instructions available [here](https://youtu.be/_YfbOzATY8Q). OAuth2.0 is based on Xero's [example](https://github.com/XeroAPI/xero-node-oauth2-app).
 
-Using bleeding edge [Azure Functions V4 with TypeScript](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-typescript?pivots=nodejs-model-v4). Most of the Microsoft documention has updated with the V4 changes, but specific methods and changes can be found [here](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-functions-version-4-of-the-node-js-programming-model-is-in/ba-p/3773541).
+Using bleeding edge [Azure Functions V4 with TypeScript](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-typescript?pivots=nodejs-model-v4). Most of the Microsoft documentation has updated with the V4 changes, but specific methods and changes can be found [here](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/azure-functions-version-4-of-the-node-js-programming-model-is-in/ba-p/3773541).
 
 ## Configuration
 
