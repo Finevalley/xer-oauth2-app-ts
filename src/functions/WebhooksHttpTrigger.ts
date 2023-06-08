@@ -1,10 +1,10 @@
+import * as crypto from "crypto";
 import {
 	app,
 	HttpRequest,
 	HttpResponseInit,
 	InvocationContext,
 } from "@azure/functions";
-import * as crypto from "crypto";
 
 export async function WebhooksHttpTrigger(
 	request: HttpRequest,
