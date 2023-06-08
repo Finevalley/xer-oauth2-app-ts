@@ -6,6 +6,13 @@ import {
 	InvocationContext,
 } from "@azure/functions";
 
+const xero = new XeroClient({
+	clientId: client_id,
+	clientSecret: client_secret,
+	redirectUris: [redirectUrl],
+	scopes: scopes.split(" "),
+});
+
 app.http("LoginHttpTrigger", {
 	methods: ["GET"],
 	route: "login",
@@ -22,6 +29,31 @@ app.http("LoginHttpTrigger", {
 			body: `<!DOCTYPE html><html><head><title>Page Title</title></head><body>${XeroButton}</body></html>`,
 			headers: { "content-type": "text/html" },
 		};
+	},
+});
+
+app.http("ConnectHttpTrigger", {
+	methods: ["GET"],
+	route: "connect",
+	authLevel: "function",
+	handler: async (
+		request: HttpRequest,
+		context: InvocationContext
+	): Promise<HttpResponseInit> => {
+		context.log(`Webhook event received at "${request.url}"!`);
+
+		try {
+			const consentUrl: string = await xero.buildConsentUrl();
+			return {
+				status: 302,
+				headers: { location: consentUrl },
+			};
+		} catch (err) {
+			return {
+				body: "Sorry, something went wrong",
+				status: 500,
+			};
+		}
 	},
 });
 
