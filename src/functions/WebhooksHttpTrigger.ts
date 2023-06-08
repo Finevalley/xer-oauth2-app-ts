@@ -5,6 +5,15 @@ import {
 	HttpResponseInit,
 	InvocationContext,
 } from "@azure/functions";
+import jwtDecode from "jwt-decode";
+import { TokenSet } from "openid-client";
+import { XeroAccessToken, XeroClient, XeroIdToken } from "xero-node";
+
+const client_id: string = process.env.XERO_CLIENT_ID!;
+const client_secret: string = process.env.XERO_CLIENT_SECRET!;
+const redirectUrl: string = process.env.XERO_REDIRECT_URI!;
+const scopes =
+	"openid profile email accounting.settings accounting.reports.read accounting.journals.read accounting.contacts accounting.attachments accounting.transactions offline_access";
 
 const xero = new XeroClient({
 	clientId: client_id,
@@ -47,6 +56,42 @@ app.http("ConnectHttpTrigger", {
 			return {
 				status: 302,
 				headers: { location: consentUrl },
+			};
+		} catch (err) {
+			return {
+				body: "Sorry, something went wrong",
+				status: 500,
+			};
+		}
+	},
+});
+
+app.http("CallbackHttpTrigger", {
+	methods: ["GET"],
+	route: "callback",
+	authLevel: "function",
+	handler: async (
+		request: HttpRequest,
+		context: InvocationContext
+	): Promise<HttpResponseInit> => {
+		context.log(`Webhook event received at "${request.url}"!`);
+
+		try {
+			const tokenSet: TokenSet = await xero.apiCallback(request.url);
+			await xero.updateTenants();
+
+			if (!tokenSet || !tokenSet.id_token || !tokenSet.access_token) {
+				return { body: "Sorry, something went wrong", status: 500 };
+			}
+
+			const decodedIdToken: XeroIdToken = jwtDecode(tokenSet.id_token);
+			const decodedAccessToken: XeroAccessToken = jwtDecode(
+				tokenSet.access_token
+			);
+
+			return {
+				status: 302,
+				headers: { location: "/api/organisation" },
 			};
 		} catch (err) {
 			return {
