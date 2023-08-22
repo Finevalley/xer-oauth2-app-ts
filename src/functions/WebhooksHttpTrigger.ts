@@ -28,7 +28,7 @@ app.http("LoginHttpTrigger", {
 	authLevel: "function",
 	handler: async (
 		request: HttpRequest,
-		context: InvocationContext
+		context: InvocationContext,
 	): Promise<HttpResponseInit> => {
 		context.log(`Webhook event received at "${request.url}"!`);
 
@@ -47,7 +47,7 @@ app.http("ConnectHttpTrigger", {
 	authLevel: "function",
 	handler: async (
 		request: HttpRequest,
-		context: InvocationContext
+		context: InvocationContext,
 	): Promise<HttpResponseInit> => {
 		context.log(`Webhook event received at "${request.url}"!`);
 
@@ -72,7 +72,7 @@ app.http("CallbackHttpTrigger", {
 	authLevel: "function",
 	handler: async (
 		request: HttpRequest,
-		context: InvocationContext
+		context: InvocationContext,
 	): Promise<HttpResponseInit> => {
 		context.log(`Webhook event received at "${request.url}"!`);
 
@@ -86,7 +86,7 @@ app.http("CallbackHttpTrigger", {
 
 			const decodedIdToken: XeroIdToken = jwtDecode(tokenSet.id_token);
 			const decodedAccessToken: XeroAccessToken = jwtDecode(
-				tokenSet.access_token
+				tokenSet.access_token,
 			);
 
 			return {
@@ -108,7 +108,7 @@ app.http("WebhooksHttpTrigger", {
 	authLevel: "function",
 	handler: async (
 		request: HttpRequest,
-		context: InvocationContext
+		context: InvocationContext,
 	): Promise<HttpResponseInit> => {
 		context.log(`Webhook event received at "${request.url}"!`);
 
@@ -120,7 +120,7 @@ app.http("WebhooksHttpTrigger", {
 
 async function verifyWebhookEventSignature(
 	request: HttpRequest,
-	context: InvocationContext
+	context: InvocationContext,
 ) {
 	const XERO_WEBHOOK_KEY = process.env.XERO_WEBHOOK_KEY;
 
@@ -151,10 +151,10 @@ async function verifyWebhookEventSignature(
 	} else {
 		// If this happens someone who is not Xero is sending you a webhook
 		context.log(
-			"Signature failed. Webhook might not be from Xero or you have misconfigured something..."
+			"Signature failed. Webhook might not be from Xero or you have misconfigured something...",
 		);
 		context.log(
-			`Got {${computedSignature}} when we were expecting {${xeroSignature}}`
+			`Got {${computedSignature}} when we were expecting {${xeroSignature}}`,
 		);
 		return false;
 	}
