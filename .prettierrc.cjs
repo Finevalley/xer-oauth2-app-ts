@@ -11,7 +11,7 @@ module.exports = {
 	semi: true,
 	singleQuote: false,
 	bracketSpacing: true,
-	bracketSameLine: true,
+	bracketSameLine: false,
 	arrowParens: "always",
 	endOfLine: "lf",
 	plugins: [
