@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import { WebhookRequestSchema } from "@/types/webhookRequest";
 import {
 	app,
 	HttpRequest,
@@ -112,9 +113,21 @@ app.http("WebhooksHttpTrigger", {
 	): Promise<HttpResponseInit> => {
 		context.log(`Webhook event received at "${request.url}"!`);
 
-		return {
-			status: (await verifyWebhookEventSignature(request, context)) ? 200 : 401,
-		};
+		const { events } = WebhookRequestSchema.parse(request.body);
+
+		if (!events.length) {
+			return {
+				status: (await verifyWebhookEventSignature(request, context))
+					? 200
+					: 401,
+			};
+		} else {
+			context.log(events);
+
+			return {
+				status: 200,
+			};
+		}
 	},
 });
 
